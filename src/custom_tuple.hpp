@@ -15,11 +15,11 @@ namespace ktori
 
 	};
 
-	template<typename T>
+	template<size_t index, typename T>
 	struct assignable_value;
 
-	template<typename X>
-	struct assignable_value<std::reference_wrapper<X>>
+	template<size_t index, typename X>
+	struct assignable_value<index, std::reference_wrapper<X>>
 	{
 		using value_type = X;
 		using ref_type = std::reference_wrapper<X>;
@@ -39,7 +39,7 @@ namespace ktori
 		std::reference_wrapper<X> _value;
 	};
 
-	template<typename T>
+	template<size_t index, typename T>
 	struct assignable_value
 	{
 		using value_type = T;
@@ -60,19 +60,21 @@ namespace ktori
 	};
 
 	template<size_t index, typename T, typename... Ts>
-	class tuple_impl<index, T, Ts...> : public tuple_impl<index + 1, Ts...>, public assignable_value<T>
+	class tuple_impl<index, T, Ts...> : public tuple_impl<index + 1, Ts...>, private assignable_value<index, T>
 	{
 	public:
-		explicit tuple_impl(T value, Ts... rest) : tuple_impl<index + 1, Ts...>(rest...), assignable_value<T>(value) {}
+		using assignable_type = assignable_value<index, T>;
 
-		typename assignable_value<T>::value_type& get()
+		explicit tuple_impl(T value, Ts... rest) : tuple_impl<index + 1, Ts...>(rest...), assignable_type(value) {}
+
+		typename assignable_type::value_type& get()
 		{
-			return assignable_value<T>::value();
+			return assignable_type::value();
 		}
 
-		const typename assignable_value<T>::value_type& get() const
+		const typename assignable_type::value_type& get() const
 		{
-			return assignable_value<T>::value();
+			return assignable_type::value();
 		}
 
 		template<size_t x, typename X, typename... Xs>

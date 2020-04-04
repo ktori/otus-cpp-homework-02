@@ -5,32 +5,31 @@
 #include "custom_tuple.hpp"
 #include "custom_tie.hpp"
 
-#include <iostream>
+#include <string>
+#include <cassert>
 
-int main()
+auto getPerson() {
+	const std::string name = "Petia";
+	const std::string secondName = "Ivanoff";
+	const std::size_t age = 23;
+	const std::string department = "Sale";
+
+	return ktori::make_tuple(
+		name, secondName, age, department
+	);
+}
+
+int main(int argc, char *argv[])
 {
-	std::string string = "hello";
+	std::string name, secondName, department;
+	std::size_t age;
 
-	auto tuple = ktori::make_tuple(1, false, 2.0f, string);
+	ktori::tie(name, secondName, age, department) = getPerson();
 
-	std::cout
-		<< ktori::get<0>(tuple) << " "
-		<< ktori::get<1>(tuple) << " "
-		<< ktori::get<2>(tuple) << " "
-		<< ktori::get<3>(tuple) << "\n";
-
-	int a;
-	bool b;
-	float c;
-	std::string d;
-
-	ktori::tie(a, b, c, d) = tuple;
-
-	std::cout
-		<< a << " "
-		<< b << " "
-		<< c << " "
-		<< d << "\n";
+	assert(name == "Petia");
+	assert(secondName == "Ivanoff");
+	assert(age == 23);
+	assert(department == "Sale");
 
 	return 0;
 }
