@@ -16,11 +16,42 @@ namespace ktori
 	};
 
 	template<typename T>
-	struct value_wrapper
-	{
-		explicit value_wrapper(T value): _value(value) {}
+	struct assignable_value;
 
-		inline T& value()
+	template<typename X>
+	struct assignable_value<std::reference_wrapper<X>>
+	{
+		using value_type = X;
+		using ref_type = std::reference_wrapper<X>;
+
+		explicit assignable_value(ref_type value) : _value(value) {}
+
+		value_type& value()
+		{
+			return _value.get();
+		}
+
+		const value_type& value() const
+		{
+			return _value.get();
+		}
+
+		std::reference_wrapper<X> _value;
+	};
+
+	template<typename T>
+	struct assignable_value
+	{
+		using value_type = T;
+
+		explicit assignable_value(T value) : _value(value) {}
+
+		value_type& value()
+		{
+			return _value;
+		}
+
+		const value_type& value() const
 		{
 			return _value;
 		}
@@ -28,35 +59,27 @@ namespace ktori
 		T _value;
 	};
 
-	template<typename T>
-	struct value_wrapper<std::reference_wrapper<T>>
-	{
-		explicit value_wrapper(std::reference_wrapper<T> value): _value(value) {}
-
-		inline T& value()
-		{
-			return _value.get();
-		}
-
-		std::reference_wrapper<T> _value;
-	};
-
 	template<size_t index, typename T, typename... Ts>
-	class tuple_impl<index, T, Ts...> : public tuple_impl<index + 1, Ts...>, public value_wrapper<T>
+	class tuple_impl<index, T, Ts...> : public tuple_impl<index + 1, Ts...>, public assignable_value<T>
 	{
 	public:
-		explicit tuple_impl(T value, Ts... rest) : tuple_impl<index + 1, Ts...>(rest...), value_wrapper<T>(value) {}
+		explicit tuple_impl(T value, Ts... rest) : tuple_impl<index + 1, Ts...>(rest...), assignable_value<T>(value) {}
 
-		inline T& get()
+		typename assignable_value<T>::value_type& get()
 		{
-			return value_wrapper<T>::value();
+			return assignable_value<T>::value();
+		}
+
+		const typename assignable_value<T>::value_type& get() const
+		{
+			return assignable_value<T>::value();
 		}
 
 		template<size_t x, typename X, typename... Xs>
 		tuple_impl<index, T, Ts...>& operator=(const tuple_impl<x, X, Xs...>& other)
 		{
 			get() = other.get();
-			tuple_impl<index + 1, Ts...>::operator=(other);
+			tuple_impl<index + 1, Ts...>::operator=(static_cast<const tuple_impl<x + 1, Xs...>&>(other));
 			return *this;
 		}
 	};

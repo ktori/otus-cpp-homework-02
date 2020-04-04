@@ -24,7 +24,13 @@ int main()
 	float c;
 	std::string d;
 
-//	ktori::tie(a, b, c, d) = tuple;
+	ktori::tie(a, b, c, d) = tuple;
+
+	std::cout
+		<< a << " "
+		<< b << " "
+		<< c << " "
+		<< d << "\n";
 
 	return 0;
 }
