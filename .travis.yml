@@ -1,0 +1,17 @@
+language: cpp
+script:
+- cmake .
+- make
+- make test
+- make package
+- ls
+before_deploy:
+  - ./bintray-descriptor.sh
+deploy:
+  provider: bintray
+  file: "descriptor.json"
+  skip_cleanup: true
+  user:
+    secure: "Vt1Xn+eAzdLwIwOTm4Ggug3sYT/9HjekciPCWjUYSo5bcLcAJvCFAcrQdt239hvDg+W5ZuDCxGGYNcQO2CTXQrIVk7p88A+XFPo+EUGK2EqGYiOVWEIFeBCtlye1+8kCY+ywh9i0erLLqvDdBnPPFfIA1rK2VHoOYidB9mhSf9Cr0fvpcG6o9OqmibUdsXl3nfhvU1aoF4EaZCTkYX1UCYya8qK4r3MrY+2NozJ3w8SS4zatALMvL/URl65AWi5W/DGiRO8IOFAs9s39T0i0DvNivrUAnNRwNSHVqMR/BWBtol0dt8jNs6al/YFeOf7cocNCKxKYVNKeVeVVQ100EYNvz0HOc0dD+q7vidjbgjCQwEldQ3BkNsBU+amIajSFS0Zb+/lI8SWfkhH1zSjnsTjQPLqeHMLO+SVHfX2yivGUL7uHd2D9+Ih5HRdITgC59740uWS0F2gIWCYRv+58d/KPtpatgv6wTwBaMOKg3o/+rmRSqT7/A4UDdfs6PqCpRdeZhKAx00HNTMVBWMo+EPRI1BBbxnqRInvThHk+w9qnbX4mvMMW/iD2gRLmIVlhpxtZR4Wfy/NH3kjGenVKLKAWil1dcTmC74PjaOMvyi0Nn+++BLXkBujholR09e7b/fYyPsI18wOn0FVwyVt/ZCnCTZL2XhpIHljb2SRBLC8="
+  key:
+    secure: "R3AzhfY4iD/2ThzTv6SYwnGHiMPt/JD6nrfdYoo6YikB1dBtUFGOlzcs9F6pltH1Zctx8CVrlyLrWqzT0s3qWFHf/kzDYXmWC9Q1/Q/K+N4SAvIvViagO2xE1FZmUwgBV9PUp8kI+fbhYweFGPG6EfazoFt/LxYGc/eXo87O9y1GkPrD1O2YlbwpzmX8y4AqiGX4DpXXrU3nzakJc7kNa7vUZfvz9ssOXr3MOtRrpnkgF+5V989YAqchGpKd8yjIyZaEyHIXsLCuZ5Y5Id0HFAUi4J8NGYJxGIQfNuSsq5TS76+k/Foxhf5I0aQKjjRJvJBON+w++ZeCepqvuQpaSin+LGFuFMRf6SoZVeS9TWqXs+9JP557dBvhCz22luJM9w7V6Tfx0Qm9dQUHtuqzEUwiwAhmli8oCEvIbWdfCFPE36r697HXJ8KVv6cc0IPTlaFBcXZ/Qsa1duN7uYXHNhiQHEajg/qsJmX4cWgmkv5wY1jV5yLb5WfrdmuLLaeyEH6YULxu5jZYdBP6fj46OkEv3sJkyNuC4IWCJP40slnJ9HVtDimTaed4H5e6ZOPqHkN0/ZktocTKYdH0wcWqyZo0ngQ/fENKuH2w/K+HMvqZi63HnWxvFWAjRitoxfOuhTAm5FYdnxS1FPh7EbfEASSWzwKKfIregOl95GWCSxo="
