@@ -7,18 +7,21 @@
 
 struct address_ctype : std::ctype<char>
 {
-	address_ctype() : std::ctype<char>(mask_table().data())
+	address_ctype() : std::ctype<char>(mask_table())
 	{
 	}
 
-	static std::array<std::ctype_base::mask, 256> mask_table()
+	static ctype_base::mask *mask_table()
 	{
-		static std::array<std::ctype_base::mask, 256> result{};
+		static std::array<std::ctype_base::mask, table_size> result{};
 
-		std::copy(classic_table(), classic_table() + result.size(), result.begin());
-		result['.'] = space;
+		auto source = classic_table();
 
-		return result;
+		std::copy(source, source + table_size, result.begin());
+
+		result['.'] = result[' '];
+
+		return result.data();
 	}
 };
 
@@ -36,6 +39,8 @@ struct address_octets_greater_than
 		for (auto i = 0; i < address::octet_count; ++i)
 			if (first.octets[i] > second.octets[i])
 				return true;
+			else if (first.octets[i] < second.octets[i])
+				break;
 
 		return false;
 	}
